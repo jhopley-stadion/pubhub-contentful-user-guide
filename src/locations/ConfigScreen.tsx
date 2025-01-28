@@ -156,7 +156,7 @@ const ConfigScreen = () => {
   return (
     <ConfigProvider>
       <Box marginLeft="spacingXl" marginRight="spacingXl">
-        <Box flexDirection="column" className={css({ margin: '80px auto', maxWidth: '1440px' })}>
+        <Flex flexDirection="column" className={css({ margin: '80px auto', maxWidth: '1440px' })}>
           {createdGuides && (
             <Note
               variant="positive"
