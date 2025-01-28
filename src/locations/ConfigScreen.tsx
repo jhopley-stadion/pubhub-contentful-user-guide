@@ -155,8 +155,8 @@ const ConfigScreen = () => {
 
   return (
     <ConfigProvider>
-      <Box marginLeft="spacingXl" marginLeft="spacingXl">
-        <Flex flexDirection="column" className={css({ margin: '80px auto', maxWidth: '1440px' })}>
+      <Box marginLeft="spacingXl" marginRight="spacingXl">
+        <Box flexDirection="column" className={css({ margin: '80px auto', maxWidth: '1440px' })}>
           {createdGuides && (
             <Note
               variant="positive"
@@ -195,7 +195,7 @@ const ConfigScreen = () => {
               </Button>
             </ButtonGroup>
           </Flex>
-          <Flex alignItems="left">
+          <Box>
             <Paragraph>
               Instructions for use:
             </Paragraph>
@@ -208,7 +208,7 @@ const ConfigScreen = () => {
               If a client specific video is available for a client ( where functionality differs to Pub Hub ),
               the video ID ( available in the url for the video ) can be added to the Guide ID Overide column and this will display instead of the Default guide.
             </Paragraph>
-          </Flex>
+          </Box>
 
           {contentTypeGuideEntries && (
             <ContentTypeGuideTable
