@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { ConfigAppSDK } from '@contentful/app-sdk';
 import {
+  Box,
   Heading,
   Flex,
   Button,
@@ -154,86 +155,102 @@ const ConfigScreen = () => {
 
   return (
     <ConfigProvider>
-      <Flex flexDirection="column" className={css({ margin: '80px auto', maxWidth: '1440px' })}>
-        {createdGuides && (
-          <Note
-            variant="positive"
-            title="Guides Created"
-            onClose={() => setCreatedGuides(null)}
-            className={css({ marginBottom: '32px' })}
-            withCloseButton
-          >
-            <Paragraph>Successfully created guides for the following content types:</Paragraph>
-            <ul>
-              {createdGuides.map((contentType, index) => (
-                <li key={index}>{contentType}</li>
-              ))}
-            </ul>
-          </Note>
-        )}
-
-        <Flex justifyContent="space-between" alignItems="center">
-          <Heading>Publishing Hub User Guide Config</Heading>
-          <ButtonGroup variant="spaced" spacing="spacingM">
-            <Button
+      <Box marginLeft="spacingXl" marginLeft="spacingXl">
+        <Flex flexDirection="column" className={css({ margin: '80px auto', maxWidth: '1440px' })}>
+          {createdGuides && (
+            <Note
               variant="positive"
-              startIcon={<PlusCircleIcon />}
-              onClick={() => setShowAddNewGuideModal(true)}
-              size="small"
+              title="Guides Created"
+              onClose={() => setCreatedGuides(null)}
+              className={css({ marginBottom: '32px' })}
+              withCloseButton
             >
-              Add
-            </Button>
-            <Button
-              variant="secondary"
-              startIcon={<CycleIcon />}
-              onClick={syncWithDefaultConfig}
-              size="small"
-            >
-              Sync with default config
-            </Button>
-          </ButtonGroup>
+              <Paragraph>Successfully created guides for the following content types:</Paragraph>
+              <ul>
+                {createdGuides.map((contentType, index) => (
+                  <li key={index}>{contentType}</li>
+                ))}
+              </ul>
+            </Note>
+          )}
+
+          <Flex justifyContent="space-between" alignItems="center">
+            <Heading>Publishing Hub User Guide Config</Heading>
+            <ButtonGroup variant="spaced" spacing="spacingM">
+              <Button
+                variant="positive"
+                startIcon={<PlusCircleIcon />}
+                onClick={() => setShowAddNewGuideModal(true)}
+                size="small"
+              >
+                Add
+              </Button>
+              <Button
+                variant="secondary"
+                startIcon={<CycleIcon />}
+                onClick={syncWithDefaultConfig}
+                size="small"
+              >
+                Sync with default config
+              </Button>
+            </ButtonGroup>
+          </Flex>
+          <Flex alignItems="left">
+            <Paragraph>
+              Instructions for use:
+            </Paragraph>
+            <Paragraph>
+              Training Videos are recorded in the Arcade Video Platform here:  https://app.arcade.software/flows.
+              Base videos for Pub Hub features are included in a configuration file and appear in the Default Guide ID column.
+            </Paragraph>
+            <Paragraph>
+              These videos will show in the related Content type in client spaces where this sidebar app has been included in the Sidebar of the Content Type.
+              If a client specific video is available for a client ( where functionality differs to Pub Hub ),
+              the video ID ( available in the url for the video ) can be added to the Guide ID Overide column and this will display instead of the Default guide.
+            </Paragraph>
+          </Flex>
+
+          {contentTypeGuideEntries && (
+            <ContentTypeGuideTable
+              entries={parameters}
+              updateInstallationParameter={updateInstallationParameters}
+              deleteInstallationParameter={deleteInstallationParameter}
+            />
+          )}
+
+          {isSyncModalOpen && (
+            <Modal onClose={rejectChanges} isShown size="fullWidth" position="top">
+              <Modal.Header title="Confirm Changes" onClose={rejectChanges} />
+              <Modal.Content>
+                <Paragraph>Are you sure you want to apply the following changes?</Paragraph>
+                {syncPreview && (
+                  <ContentTypeGuideTable previewMode entries={syncPreview} />
+                )}
+              </Modal.Content>
+              <Modal.Controls>
+                <Button onClick={acceptChanges} variant="positive">
+                  Accept
+                </Button>
+                <Button variant="negative" onClick={rejectChanges}>
+                  Reject
+                </Button>
+              </Modal.Controls>
+            </Modal>
+          )}
+
+          {showAddNewGuideModal && (
+            <CreateContentTypeGuides
+              isOpen={showAddNewGuideModal}
+              onClose={() => setShowAddNewGuideModal(false)}
+              onSave={(newGuide) => {
+                mergeNewGuides(newGuide);
+                setShowAddNewGuideModal(false);
+              }}
+              validate={checkIfContentTypeExists}
+            />
+          )}
         </Flex>
-
-        {contentTypeGuideEntries && (
-          <ContentTypeGuideTable
-            entries={parameters}
-            updateInstallationParameter={updateInstallationParameters}
-            deleteInstallationParameter={deleteInstallationParameter}
-          />
-        )}
-
-        {isSyncModalOpen && (
-          <Modal onClose={rejectChanges} isShown size="fullWidth" position="top">
-            <Modal.Header title="Confirm Changes" onClose={rejectChanges} />
-            <Modal.Content>
-              <Paragraph>Are you sure you want to apply the following changes?</Paragraph>
-              {syncPreview && (
-                <ContentTypeGuideTable previewMode entries={syncPreview} />
-              )}
-            </Modal.Content>
-            <Modal.Controls>
-              <Button onClick={acceptChanges} variant="positive">
-                Accept
-              </Button>
-              <Button variant="negative" onClick={rejectChanges}>
-                Reject
-              </Button>
-            </Modal.Controls>
-          </Modal>
-        )}
-
-        {showAddNewGuideModal && (
-          <CreateContentTypeGuides
-            isOpen={showAddNewGuideModal}
-            onClose={() => setShowAddNewGuideModal(false)}
-            onSave={(newGuide) => {
-              mergeNewGuides(newGuide);
-              setShowAddNewGuideModal(false);
-            }}
-            validate={checkIfContentTypeExists}
-          />
-        )}
-      </Flex>
+      </Box>
     </ConfigProvider>
   );
 };
